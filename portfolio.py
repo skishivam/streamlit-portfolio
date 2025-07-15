@@ -1,11 +1,24 @@
 import streamlit as st
 from PIL import Image
+import io
+from PIL import ImageDraw
 
 # --- Page config ---
 st.set_page_config(page_title="Shivam Jha | Portfolio", layout="wide")
 
 # --- Load assets ---
-img = Image.open("profile.jpg")
+img = Image.open("profile.jpg").convert("RGBA")
+# Create a circular mask
+size = img.size
+mask = Image.new("L", size, 0)
+draw = Image.new("RGBA", size)
+ImageDraw.Draw(mask).ellipse((0, 0, size[0], size[1]), fill=255)
+img.putalpha(mask)
+
+# Save to buffer for Streamlit
+buf = io.BytesIO()
+img.save(buf, format="PNG")
+buf.seek(0)
 
 # --- Sidebar ---
 with st.sidebar:
