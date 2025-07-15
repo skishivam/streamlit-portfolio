@@ -8,11 +8,17 @@ st.set_page_config(page_title="Shivam Jha | Portfolio", layout="wide")
 
 # --- Load assets ---
 img = Image.open("profile.jpg").convert("RGBA")
+# Make image square for circular crop
+min_side = min(img.size)
+left = (img.width - min_side) // 2
+top = (img.height - min_side) // 2
+right = left + min_side
+bottom = top + min_side
+img = img.crop((left, top, right, bottom))
+
 # Create a circular mask
-size = img.size
-mask = Image.new("L", size, 0)
-draw = Image.new("RGBA", size)
-ImageDraw.Draw(mask).ellipse((0, 0, size[0], size[1]), fill=255)
+mask = Image.new("L", img.size, 0)
+ImageDraw.Draw(mask).ellipse((0, 0, img.size[0], img.size[1]), fill=255)
 img.putalpha(mask)
 
 # Save to buffer for Streamlit
